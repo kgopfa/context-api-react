@@ -1,9 +1,10 @@
-import { useState, useEffect, useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate, useParams } from 'react-router-dom';
 import NavBar from '../components/NavBar/NavBar';
 import ListItem from '../components/ListItem/ListItem';
 import ItemsContext from '../context/ItemsContext';
+import ListsContext from '../context/ListsContext';
 
 const ListItemWrapper = styled.div`
   display: flex;
@@ -16,15 +17,16 @@ function ListDetail() {
   let navigate = useNavigate();
   const { listId } = useParams();
 
-  const { loading, error, items: data } = useContext(ItemsContext)
-
-  const [items, setItems] = useState([]);
+  const { loading, error, items, fetchItems } = useContext(ItemsContext);
+  const { list, fetchList } = useContext(ListsContext);
 
   useEffect(() => {
-    data &&
-      listId &&
-      setItems(data.filter((item) => item.listId === parseInt(listId)));
-  }, [data, listId]);
+    listId && !items.length && fetchItems(listId);
+  }, [fetchItems, data, listId]);
+
+  useEffect(() => {
+    listId && fetchList(listId);
+  }, [fetchList, listId])
 
   return (
     <>
@@ -32,6 +34,7 @@ function ListDetail() {
         <NavBar
           goBack={() => navigate(-1)}
           openForm={() => navigate(`/list/${listId}/new`)}
+          title={list && list.title}
         />
       )}
       <ListItemWrapper>
