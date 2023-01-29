@@ -22,7 +22,7 @@ function ListDetail() {
 
   useEffect(() => {
     listId && !items.length && fetchItems(listId);
-  }, [fetchItems, data, listId]);
+  }, [fetchItems, listId]);
 
   useEffect(() => {
     listId && fetchList(listId);
